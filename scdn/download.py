@@ -2,7 +2,6 @@ import youtube_dl
 
 OPTIONS = {
     "format": "bestaudio/best",
-    "outtmpl": "%(id)s.%(ext)s",
     "postprocessors": [
         {
             "key": "FFmpegExtractAudio",
@@ -14,5 +13,11 @@ OPTIONS = {
 
 
 class YTSCDL:
-    def download_sc(self, url: str) -> str:  # returns file name
-        pass
+    def download_sc(self, url: str):  # returns file name
+        if isinstance(url, str):
+            url = [url]
+
+        with youtube_dl.YoutubeDL(OPTIONS) as ytdl:
+            info_dict = ytdl.extract_info(url[0], download=True)
+            filename = ytdl.prepare_filename(info_dict)
+            return (info_dict, filename)
